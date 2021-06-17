@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <title>Welcome</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+    
+</head>
+<body>
+    <div class="container-flush m-2">
+        <div class="row justify-content-between">
+            <div class="col-6">
+                <div class="fixed-top">
+                    <a href="/logout" class="float-right mr-5">Log Out</a>
+                    <a href="/success" class="float-right mr-5">Profile</a>
+                    <p class="float-right mr-5">Logged in as, {{request.session.logged_user_name}}</p>
+                </div>
+                <h1 class="text-dark mb-4">
+                    Pokemon Collection for {{ user.first_name }} {{ user.last_name }}
+                </h1>
+
+                
+                <div id=pokemon class='row'>
+                    {% for pokemon in pokemons %}
+                    <div class='display-poke col-12 col-sm-6 col-md-4 mb-3'>
+                        <div class="card bg-info" style="width: 8rem;">
+                            <img class="card-img-top" src='{{pokemon.src}}' alt='{{pokemon.name}}'>
+                            <p class='post text-center'>{{pokemon.name}}</p>
+                            <a href="/pokemon/{{pokemon.id}}" class="text-center bg-dark">View Pokemon</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+
+                <div id=new_post>
+                    <h2>Write a Post:</h2>
+                    <form action="/post_content/{{user.id}}" method=POST>
+                        {% csrf_token %}
+                        <div class="form-group-row">
+                            <label for="content" class="col-form-label-lg">Post Content</label>
+                            <textarea class="form-control" name="content" id="content" rows="3"></textarea>
+                        </div>
+                        <input type="submit" value="Post" class="btn btn-primary my-2">
+                    </form>
+                </div>
+
+                <h2 class="text-dark mb-4">
+                    {{ user.first_name }} {{ user.last_name }} Wall
+                </h2>
+
+                <div id=posts>
+                    {% for post in posts %}
+                    <div class='single_post mt-2'>
+                        <p class='post'>{{post.content}}</p>
+                        <p class='poster my-0'>Posted By: <a href="/user/{{post.posted_by.id}}">{{post.posted_by.first_name}} {{post.posted_by.last_name}}</a></p>
+                        {% comment %}
+                        <p class='poster my-0'>To: <a href="/user/{{post.posted_to.id}}">{{post.posted_to.first_name}} {{post.posted_to.last_name}}</a></p>
+                        {% endcomment %}
+                        <p class="mb-0 font-weight-light">Likes: {{ post.user_likes.count }}</p>
+                        <a href="/post_liked/{{post.id}}">Like Post</a>
+                        <div class="ml-5">
+
+
+                                {% for comment in post.post_comments.all %}
+                                <div class=comments>
+                                    <p class="mb-1">{{comment.content}}</p>
+                                    <div class="details">
+                                        <p class="font-weight-light mb-0 details">Poster: {{comment.user.first_name}} {{comment.user.last_name}}</p>
+                                        {% if request.session.user_id == comment.user.id %}
+                                        <a href="/delete_comment/{{comment.id}}" class="details">Delete</a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                {% endfor %}
+
+                            <form action="/add_comment/{{post.id}}" method=POST class="mt-3">
+                                {% csrf_token %}
+                                <div class="form-group-row">
+                                    Comment
+                                    <textarea class="form-control" name="content" id="content" rows="2"></textarea>
+                                    <input type="submit" value="Add Comment" class="btn btn-primary btn-sm my-2">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

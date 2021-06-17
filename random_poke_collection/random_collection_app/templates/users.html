@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Users</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+</head>
+    <body>
+        <div class="container-flush m-2">
+            <div class="row justify-content-between">   
+                <div class="col-6 mr-5">
+                    <div class="fixed-top">
+                        <a href="/logout" class="float-right mr-5">Log Out</a>
+                        <a href="/success" class="float-right mr-5">Profile</a>
+                        <p class="float-right mr-5">Logged in as, {{request.session.logged_user_name}}</p>
+                    </div>
+                    <h1 class="text-dark mb-4">
+                        List of All Users
+                    </h1>      
+                    {% comment %} All users listed on a table here. {% endcomment %}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col"># of Posts</th>
+                                <th scope="col"># of Comments</th>
+                                <th scope="col"># of Pokemon</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <th>{{ user.id }}</th>
+                                <th>{{ user.first_name }} {{ user.last_name }}</th>
+                                <th>{{ user.user_posts.count }}</th>
+                                <th>{{ user.user_comments.count }}</th>
+                                <th>{{ user.user_pokemons.count }}</th>
+                                <th><a href="/user/{{ user.id }}">View Wall</a></th>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

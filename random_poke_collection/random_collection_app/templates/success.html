@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Welcome</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+
+</head>
+<body>
+    <div class="container-flush m-2">
+        <div class="row justify-content-between">
+            <div class="col-6">
+                <div class="fixed-top"><a href="/logout" class="float-right mr-5">Log Out</a></div>
+                <h1 class="text-dark mb-4">
+                    Welcome, {{ user.first_name }} {{ user.last_name }}
+                </h1>
+                <ul class="messages">    
+                    {% for message in messages %}    
+                        <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>    
+                    {% endfor %}
+                </ul>
+                <h5 class="text-success mb-4">
+                </h5>
+                <p class="font-weight-bold">Edit User Form:</p>
+                <form action="/edit/{{user.id}}" method=POST>
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="first_name">First Name:</label>
+                        <input type="text" name='first_name' value={{user.first_name}} class="form-control-sm">
+                        <label for="last_name">Last Name:</label>
+                        <input type="text" name='last_name' value={{user.last_name}} class="form-control-sm">
+                        <label for="email">Email:</label>
+                        <input type="text" name='email' value={{user.email}} class="form-control-sm">
+                        <input type="submit" class="btn btn-warning">
+                    </div>
+                </form>
+                <div class="row justify-content-around my-3">
+                    <form action="/user/{{ user.id }}" method=GET>
+                        <button class="button-custom mx-3">View My Wall</button>
+                    </form>
+                    <form action="/collect_pokemon" method=POST>
+                        {% csrf_token %}
+                        <button class="button-customr">Collect Pokemon</button>
+                    </form>
+                    <form action="/users" method=GET>
+                        <button class="button-custom mx-3">View All Users</button>
+                    </form>
+                </div>
+
+                <div id=pokemon class='row'>
+                    {% for pokemon in pokemons %}
+                    <div class='display-poke col-12 col-sm-6 col-md-4 mb-3'>
+                        <div class="card bg-info" style="width: 12rem;">
+                            <img class="card-img-top" src='{{pokemon.src}}' alt='{{pokemon.name}}'>
+                            <p class='post text-center'>{{pokemon.name}}</p>
+                            <a href="/pokemon/{{pokemon.id}}" class="text-center bg-dark">View Pokemon</a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+
+                <h4>Total Posts</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Posted To</th>
+                            <th scope="col">Link</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for post in posts %}
+                        <tr>
+                            <th>{{ post.id }}</th>
+                            <th>{{ post.posted_to.first_name }}'s Wall</th>
+                            <th><a href="/user/{{ post.posted_to.id }}">View Wall</a></th>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <h4>Total Comments</h4>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Id</th>
+                            <th scope="col">Commented On</th>
+                            <th scope="col">Link to Wall</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for comment in comments %}
+                        <tr>
+                            <th>{{ comment.id }}</th>
+                            <th>A post by {{ comment.post.posted_by.first_name }}</th>
+                            <th><a href="/user/{{ comment.post.posted_to.id }}">View Wall</a></th>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <form action="/delete_user/{{user.id}}" method=POST>
+                    {% csrf_token %}
+                    <button class=" float-right btn btn-large btn-danger mx-3">Delete User</button>
+                </form>
+            </div>
+            
+        </div>
+    </div>
+</body>
+</html>

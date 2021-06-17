@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Users</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'style.css'%}">
+</head>
+    <body>
+        <div class="container-flush m-2">
+            <div class="row justify-content-between">   
+                <div class="col-6 mr-5">
+                    <div class="fixed-top">
+                        <a href="/logout" class="float-right mr-5">Log Out</a>
+                        <a href="/success" class="float-right mr-5">Profile</a>
+                        <p class="float-right mr-5">Logged in as, {{request.session.logged_user_name}}</p>
+                    </div>
+                    <h1 class="text-dark mb-4">
+                        {{current.name}}
+                    </h1>    
+                    <div class="card bg-light" style="width: 16rem;">
+                        <img class="card-img-top" src='{{current.src}}' alt='{{current.name}}'>
+                        <p class='post text-center'>{{current.name}}</p>
+                    </div>
+                    <h2 class="text-dark mb-4">
+                        List of All Pokemon
+                    </h2>      
+                    {% comment %} All users listed on a table here. {% endcomment %}
+
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th scope="col">Table Id</th>
+                                <th scope="col">Name</th>
+                                <th scope="col">Pokemon API Id</th>
+                                <th scope="col"># of Users with pokemon</th>
+                                <th scope="col">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for pokemon in pokemons %}
+                            <tr>
+                                <th>{{ pokemon.id }}</th>
+                                <th>{{ pokemon.name }}</th>
+                                <th>{{ pokemon.poke_id }}</th>
+                                <th>{{ pokemon.owners.count }}</th>
+                                <th><a href="/pokemon/{{pokemon.id}}">View Wall</a></th>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
